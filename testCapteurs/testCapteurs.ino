@@ -1,32 +1,59 @@
-http://stackoverflow.com/questions/7670561/how-to-get-htaccess-to-work-on-mamp
-il y a quelques secondes
 
 #include <ArduinoRobot.h>
-#include <TFT.h>
 #include <SPI.h>
 #include <Wire.h>
+
+int frontSensor = M2;
+int leftSensor = M4;
+int rightSensor = M0;
+int rearSensor = M6;
 
 void setup() {
   // put your setup code here, to run once:
   Robot.begin();
   Robot.beginTFT();
+  Serial.begin(9600);
 }
 
 void loop() {
-  int tk0 = Robot.analogRead(TK0);
-  int tk2 = Robot.analogRead(TK2);
-  int tk4 = Robot.analogRead(TK4);
-  int tk6 = Robot.analogRead(TK6);
+  String frontValue = String(Robot.analogRead(frontSensor));
+  
+  Robot.clearScreen();
+  Robot.stroke(0, 0, 0);
+  Robot.textSize(2);
+  Robot.text(getOlympicDistance(frontSensor),54,5);  
+  Robot.text(getOlympicDistance(leftSensor),5,80);  
+  Robot.text(getOlympicDistance(rightSensor),100,80);  
+  Robot.text(getOlympicDistance(rearSensor),54,140);
+  delay(1000);
+}
 
-  String debug = "Debug Capteurs";
-  debug += tk0;
-  debug += "   -   ";
-  debug += tk2;
-  debug += "   -   ";
-  debug += tk4;
-  debug += "   -   ";
-  debug += tk6;
-  // put your main code here, to run repeatedly:
-  Robot.text(debug);
-  delay(100);
+int getOlympicDistance(int sensorPin) {
+  Serial.print(sensorPin);
+  Serial.print("[");
+  int ITERATIONS = 10;
+  int values[ITERATIONS];
+  int min = 9999;
+  int max = 0;
+  int sum = 0;
+  for (int i=0;i<ITERATIONS;i++){
+    values[i] = Robot.analogRead(sensorPin);
+    Serial.print(values[i]);
+    Serial.print(", ");
+    sum += values[i];
+    if(values[i] < min) {
+      min = values[i];
+    }
+    if(values[i] > max) {
+      max = values[i];
+    }
+     delay(10);
+  }
+  Serial.print("]");
+  Serial.println("");
+  return (int) (((sum - (max + min )) / (ITERATIONS - 4))*1.27);
+}
+
+int getDistance(int sensorPin) {
+  return (int) Robot.analogRead(sensorPin)*1.27;
 }
