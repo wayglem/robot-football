@@ -25,6 +25,9 @@ void loop() {
   Robot.text(getOlympicDistance(leftSensor),5,80);  
   Robot.text(getOlympicDistance(rightSensor),100,80);  
   Robot.text(getOlympicDistance(rearSensor),54,140);
+  
+  Robot.text((int)Robot.compassRead(), 54, 80); //affiche la valeur du compas
+  
   delay(1000);
 }
 
