@@ -7,6 +7,7 @@ int leftSensor = M4;
 int rightSensor = M0;
 int rearSensor = M6;
 
+int diamRobot = 11;
 int hPlan = 135;
 int lPlan = 103;
 int ml = 12; // marge largeur
