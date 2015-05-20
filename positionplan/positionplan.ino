@@ -1,4 +1,3 @@
-
 #include <ArduinoRobot.h>
 #include <SPI.h>
 #include <Wire.h>
@@ -8,32 +7,47 @@ int leftSensor = M4;
 int rightSensor = M0;
 int rearSensor = M6;
 
+int hPlan = 135;
+int lPlan = 103;
+int ml = 12; // marge largeur
+int mh = 12; // marge hauteur
+int a0 = 295;
+
 void setup() {
   // put your setup code here, to run once:
   Robot.begin();
   Robot.beginTFT();
   Serial.begin(9600);
+  Robot.stroke(0, 0, 0);
+  
 }
 
 void loop() {
-  String frontValue = String(Robot.analogRead(frontSensor));
+  // put your main code here, to run repeatedly:
   Robot.clearScreen();
-  Robot.stroke(0, 0, 0);
+  Robot.rect(ml, mh, lPlan, hPlan);
+  Robot.pointTo(a0);
+  int * distance = getOlympicDistance();
+  
+  Robot.circle(distance[2]+diamRobot+ml, distance[1]+diamRobot+mh, 4);
+  
+  
   Robot.textSize(2);
-  int * distances = getOlympicDistance();
-  Robot.text(distances[1],54,5);  
-  Robot.text(distances[0],5,80);  
-  Robot.text(distances[2],100,80);  
-  Robot.text(distances[3],54,140);
-  Robot.text((int)Robot.compassRead(), 54, 80); //affiche la valeur du compas
-  free(distances);
-  delay(3000);
+  Robot.text(distance[2]+diamRobot, 2, 80); //Affiche la distance de gauche
+  Robot.text(distance[1]+diamRobot, 47, 3); // Affiche la distance du haut
+  Robot.text(distance[0]+diamRobot, 93, 80); //Affiche la distance de droite
+  Robot.text(distance[3]+diamRobot, 47, 145); //Affiche la distance du bas
+  Robot.text((int)Robot.compassRead(), 47, 70); //Affiche la boussole
+  free(distance);
+  delay(1000);
+  
 }
 
-int getDistance(int sensorPin) {
-  return (int) Robot.analogRead(sensorPin)*1.27;
-}
-
+// TODO : a transformer en .h
+// [0] = x2 (droite)
+// [1] = y1 (haut)
+// [2] = x1 (gauche)
+// [3] = y2 (bas)
 int * getOlympicDistance() {
   int ITERATIONS = 50;
   int values[4][ITERATIONS];
