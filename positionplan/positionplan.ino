@@ -7,7 +7,7 @@ int leftSensor = M4;
 int rightSensor = M0;
 int rearSensor = M6;
 
-int diamRobot = 11;
+int rayonRobot = 11;
 int hPlan = 135;
 int lPlan = 103;
 int ml = 12; // marge largeur
@@ -29,19 +29,31 @@ void loop() {
   Robot.rect(ml, mh, lPlan, hPlan);
   Robot.pointTo(a0);
   int * distance = getOlympicDistance();
-  
-  Robot.circle(distance[2]+diamRobot+ml, distance[1]+diamRobot+mh, 4);
-  
+  int xDist, yDist;
+  // Si le capteur droit est plus proche d'un mur, calculer avec ce capteur
+  if (distance[0] < distance[2]){
+    xDist = lPlan + ml - (distance[0] + rayonRobot);
+  }
+  else {
+    xDist = distance[2]+rayonRobot+ml;
+  }
+  // Si le capteur bas est plus proche d'un mur, calculer avec ce capteur
+  if (distance[3]<distance[1]){
+    yDist = hPlan + mh - (distance[3] + rayonRobot);
+  }
+  else {
+    yDist = distance[1]+rayonRobot+mh;
+  }
+  Robot.circle(xDist, yDist, 4);
   
   Robot.textSize(2);
-  Robot.text(distance[2]+diamRobot, 2, 80); //Affiche la distance de gauche
-  Robot.text(distance[1]+diamRobot, 47, 3); // Affiche la distance du haut
-  Robot.text(distance[0]+diamRobot, 93, 80); //Affiche la distance de droite
-  Robot.text(distance[3]+diamRobot, 47, 145); //Affiche la distance du bas
+  Robot.text(distance[2]+rayonRobot, 2, 80); //Affiche la distance de gauche
+  Robot.text(distance[1]+rayonRobot, 47, 3); // Affiche la distance du haut
+  Robot.text(distance[0]+rayonRobot, 93, 80); //Affiche la distance de droite
+  Robot.text(distance[3]+rayonRobot, 47, 145); //Affiche la distance du bas
   Robot.text((int)Robot.compassRead(), 47, 70); //Affiche la boussole
   free(distance);
   delay(1000);
-  
 }
 
 // TODO : a transformer en .h
