@@ -20,7 +20,10 @@ void setup() {
   Robot.beginTFT();
   Serial.begin(9600);
   Robot.stroke(0, 0, 0);
-  
+  Robot.textSize(2);
+  Robot.text("Hello, place\nthe robot\nparallel to\nthe field's\nlongest edge.\nThen press the\nwhite button.",5,5);
+  Robot.waitContinue(BUTTON_MIDDLE);
+  a0 = (int)Robot.compassRead();
 }
 
 void loop() {
