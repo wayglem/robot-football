@@ -3,35 +3,44 @@
 #include <Wire.h>
 
 int frontSensor = M2;
-int leftSensor = M4;
+int leftSensor  = M4;
 int rightSensor = M0;
-int rearSensor = M6;
+int rearSensor  = M6;
 
 int rayonRobot = 11;
 int hPlan = 135;
 int lPlan = 103;
 int ml = 12; // marge largeur
 int mh = 12; // marge hauteur
-int a0 = 295;
+int a0 = 90;
 
 void setup() {
   // put your setup code here, to run once:
   Robot.begin();
   Robot.beginTFT();
   Serial.begin(9600);
+/*
   Robot.stroke(0, 0, 0);
-  Robot.textSize(2);
+  Robot.textSize(1);
   Robot.text("Hello, place\nthe robot\nparallel to\nthe field's\nlongest edge.\nThen press the\nwhite button.",5,5);
   Robot.waitContinue(BUTTON_MIDDLE);
   a0 = (int)Robot.compassRead();
+  Robot.text(a0, 100, 120);
+  delay(1000);
+  */
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   Robot.clearScreen();
   Robot.rect(ml, mh, lPlan, hPlan);
+  Robot.text(a0, 50, 50);
+  Robot.text((int)Robot.compassRead(), 100, 100);
+//  Robot.turn((int) Robot.compassRead()-a0);
+  Serial.print("DEBUG: robot.turn executed");
   Robot.pointTo(a0);
   int * distance = getOlympicDistance();
+  Serial.print("DEBUG: distance olympic calculated");
   int xDist, yDist;
   // Si le capteur droit est plus proche d'un mur, calculer avec ce capteur
   if (distance[0] < distance[2]){
@@ -40,6 +49,7 @@ void loop() {
   else {
     xDist = distance[2]+rayonRobot+ml;
   }
+  Serial.print("DEBUG: Nearest sensor horizontal calculated");
   // Si le capteur bas est plus proche d'un mur, calculer avec ce capteur
   if (distance[3]<distance[1]){
     yDist = hPlan + mh - (distance[3] + rayonRobot);
@@ -47,6 +57,7 @@ void loop() {
   else {
     yDist = distance[1]+rayonRobot+mh;
   }
+  Serial.print("DEBUG: Nearest vertical sensor calculated");
   Robot.circle(xDist, yDist, 4);
   
   Robot.textSize(2);
@@ -55,7 +66,9 @@ void loop() {
   Robot.text(distance[0]+rayonRobot, 93, 80); //Affiche la distance de droite
   Robot.text(distance[3]+rayonRobot, 47, 145); //Affiche la distance du bas
   Robot.text((int)Robot.compassRead(), 47, 70); //Affiche la boussole
+  Serial.print("DEBUG: printed values");
   free(distance);
+  Serial.print("DEBUG: freed memory");
   delay(1000);
 }
 
@@ -76,7 +89,6 @@ int * getOlympicDistance() {
   sums[3]=0;
   
   int OLYMPICNBTRUNCATE = 10;
-  Serial.print("avant : [ ");
   for (int i=0;i<ITERATIONS;i++){
     values[0][i] = Robot.analogRead(M0);
     values[1][i] = Robot.analogRead(M2);
@@ -84,11 +96,8 @@ int * getOlympicDistance() {
     values[2][i] = Robot.analogRead(M4);
     values[3][i] = Robot.analogRead(M6);
     sum = sum + values[1][i];
-    Serial.print(values[1][i]);
-    Serial.print(", ");
     delay(20);
   }
-  Serial.print("]\n");
   sort(values[0], ITERATIONS);
   sort(values[1], ITERATIONS);
   sort(values[2], ITERATIONS);
@@ -102,7 +111,6 @@ int * getOlympicDistance() {
   for(int j=0; j<4;j++){
    sums[j]=(int) (sums[j]/(ITERATIONS-(2*OLYMPICNBTRUNCATE)))*1.27;
   }
-  Serial.println("");
   return sums;
 }
 void sort(int a[], int size) {
