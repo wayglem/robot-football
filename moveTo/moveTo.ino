@@ -2,20 +2,21 @@
 #include <SPI.h>
 #include <Wire.h>
 
-int frontSensor = M2;
-int leftSensor  = M4;
-int rightSensor = M0;
-int rearSensor  = M6;
+//int haut, bas, gauche, droite = 0;
+
+int haut = 158;
+int gauche = 78;
+int bas = 283;
+int droite = 218;
 
 int rayonRobot = 11;
 int hPlan = 135;
 int lPlan = 103;
 int ml = 12; // marge largeur
 int mh = 12; // marge hauteur
-int a0 = 90;
 
-int targetX = 68;
-int targetY = 41;
+int targetX = 79;
+int targetY = 35;
 
 int TOLERANCE_BOUSSOLE = 10;
 
@@ -26,9 +27,32 @@ void setup() {
   Robot.beginSpeaker();
   Serial.begin(9600);
   Robot.stroke(0, 0, 0);
-  Robot.text("Compass setting", 5, 5);
+  /*
+  Robot.text("Compass : haut", 5, 5);
   Robot.waitContinue(BUTTON_MIDDLE);
-  a0 = (int)Robot.compassRead();
+  haut =  (int) Robot.compassRead();
+  Robot.text(haut, 40, 70);
+  delay(2000);
+  Robot.clearScreen();
+  Robot.text("Compass : gauche", 5, 5);
+  Robot.waitContinue(BUTTON_MIDDLE);
+  gauche =  (int) Robot.compassRead();
+  Robot.text(gauche, 40, 70);
+  delay(2000);
+  Robot.clearScreen();
+  Robot.text("Compass : bas", 5, 5);
+  Robot.waitContinue(BUTTON_MIDDLE);
+  bas =  (int) Robot.compassRead();
+  Robot.text(bas, 40, 70);
+  delay(2000);
+  Robot.clearScreen();
+  Robot.text("Compass : droite", 5, 5);
+  Robot.waitContinue(BUTTON_MIDDLE);
+  droite =  (int) Robot.compassRead();
+  Robot.text(droite, 40, 70);
+  delay(2000);
+  Robot.clearScreen();
+  */
   Robot.clearScreen();
   Robot.text("Place the robot", 5, 5);
   delay(3000);
@@ -36,23 +60,23 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  Robot.pointTo(a0);
+//  Robot.pointTo(haut);
   moveForwardUntil(targetY);
+/*
   int * position = getPositionField();
   if (position[0] < targetX){
-    Robot.turn(70);
+    Robot.pointTo(droite);
   }else{
-    Robot.turn(-70);
+    Robot.pointTo(gauche);
   }
-  //moveForwardUntil(lPlan-(targetX+rayonRobot));
   delay(1000);
   moveForwardUntil(lPlan-targetX);
   Robot.clearScreen();
   Robot.text(position[0], 50, 15);
   Robot.text(position[1], 30, 115);
+  */
   delay(5000);
-  free(position);
-  //Robot.turn(90);
+//  free(position);
 }
 
 // TODO : a transformer en .h
@@ -128,7 +152,7 @@ int * getPositionField () {
   int orientation = (int) Robot.compassRead();
   int * position = new int [2];
   Robot.clearScreen();
-  if (orientation < (a0 + TOLERANCE_BOUSSOLE) % 360 || orientation > (a0 - TOLERANCE_BOUSSOLE) % 360){
+  if (orientation < (haut + TOLERANCE_BOUSSOLE) % 360 && orientation > (haut - TOLERANCE_BOUSSOLE) % 360){
     // Si le capteur droit est plus proche d'un mur, calculer avec ce capteur
     Robot.text("haut", 5, 5);
     if (distances[0] < distances[2]) {
@@ -141,10 +165,10 @@ int * getPositionField () {
       position[1] = hPlan - (distances[3] + rayonRobot);
     }else {
       position[1] = distances[1] + rayonRobot;
-    } 
+    }
   }
   //Si le robot est tourne vers la droite
-  else if (orientation < (a0 + 90 + TOLERANCE_BOUSSOLE) % 360 || orientation > (a0 + 90 - TOLERANCE_BOUSSOLE) % 360){
+  else if (orientation < (droite + TOLERANCE_BOUSSOLE) % 360 && orientation > (droite - TOLERANCE_BOUSSOLE) % 360){
     Robot.text("droite", 5, 5);
     if (distances[1] < distances[3]) {
       position[0] = lPlan - (distances[1] + rayonRobot);
@@ -158,7 +182,7 @@ int * getPositionField () {
     }   
   }
   //Si le robot est tourne vers la gauche
-  else if (orientation < (a0 - 90 + TOLERANCE_BOUSSOLE) % 360 || orientation > (a0 - 90 - TOLERANCE_BOUSSOLE) % 360){
+  else if (orientation < (gauche + TOLERANCE_BOUSSOLE) % 360 && orientation > (gauche - TOLERANCE_BOUSSOLE) % 360){
     Robot.text("gauche", 5, 5);
     if (distances[1] < distances[3]) {
       position[0] = distances[1] + rayonRobot;
@@ -172,7 +196,7 @@ int * getPositionField () {
     } 
   }
   //Si le robot est tourne vers le bas
-  else if (orientation < (a0 - 180 + TOLERANCE_BOUSSOLE) % 360 || orientation > (a0 - 180 - TOLERANCE_BOUSSOLE) % 360){  
+  else if (orientation < (bas + TOLERANCE_BOUSSOLE) % 360 && orientation > (bas - TOLERANCE_BOUSSOLE) % 360){  
     Robot.text("bas", 5, 5);
     if (distances[0] < distances[2]) {
       position[0] = distances[0] + rayonRobot;
@@ -187,13 +211,13 @@ int * getPositionField () {
   }
   else {
     Robot.text("autre", 5, 5);
-    Robot.pointTo(a0);
+    Robot.text(orientation, 40, 70);
+    Robot.pointTo(haut);
     getPositionField();
-  }  
+  }
   free(distances);
   return position;
 }
-
 void sort(int a[], int size) {
   for (int i = 0; i < (size - 1); i++) {
     for (int o = 0; o < (size - (i + 1)); o++) {
@@ -207,28 +231,34 @@ void sort(int a[], int size) {
 }
 void moveForwardUntil (int distanceFromObstacle){
   int sensorDistance = (int) Robot.analogRead(M2) * 1.27;
- 
-  if (sensorDistance - distanceFromObstacle < 1) {
-    Robot.motorsStop();
+
+  Serial.println("avant le if ");
+  Serial.println(sensorDistance);
+  Serial.println(distanceFromObstacle);
+
+  if (sensorDistance - distanceFromObstacle < 5) {
+//    Robot.motorsStop();
     Robot.beep(BEEP_SIMPLE);
     
     int * distance = getOlympicDistance();
-    //Robot.textSize(2);
     Robot.clearScreen();
-    //Robot.text(position[1], 20, 70);
-    //Robot.text(position[1] - distanceFromObstacle, 20, 85);
     //On met inferieur a 5 pour avoir de la tolerance
     if (distance[1] - distanceFromObstacle <= 5) {
+
+      Serial.print("Distance 1 : ");
+      Serial.println(distance[1]);
+
       Robot.beep(BEEP_DOUBLE);
       Robot.textSize(2);
       Robot.text(distance[1], 30,70);
       Robot.text(distanceFromObstacle, 30, 85);
+      free(distance);
       return;
     }
     free(distance);
   }
-  Robot.motorsWrite(150,150);
-  delay(40);
+//  Robot.motorsWrite(255,255);
+  delay(400);
   moveForwardUntil(distanceFromObstacle);
 }
 

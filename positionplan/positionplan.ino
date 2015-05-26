@@ -12,7 +12,11 @@ int hPlan = 135;
 int lPlan = 103;
 int ml = 12; // marge largeur
 int mh = 12; // marge hauteur
-int a0 = 90;
+int TOLERANCE_BOUSSOLE = 20;
+int haut = 158;
+int gauche = 78;
+int bas = 283;
+int droite = 218;
 
 void setup() {
   // put your setup code here, to run once:
@@ -20,21 +24,29 @@ void setup() {
   Robot.beginTFT();
   Serial.begin(9600);
   Robot.stroke(0, 0, 0);
+/*
   Robot.text("Compass setting", 5, 5);
   Robot.waitContinue(BUTTON_MIDDLE);
-  a0 = (int)Robot.compassRead();
-  Robot.clearScreen();
+  a0 =  (int) Robot.compassRead();
+  Robot.text(a0, 40, 70);
   delay(1000);
+  Robot.clearScreen();
+  */
+  Robot.waitContinue(BUTTON_MIDDLE);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   Robot.clearScreen();
   Robot.rect(ml, mh, lPlan, hPlan);
-  Robot.pointTo(a0);
-  int * position = getPosition();
-  Robot.circle(position[0], position[1], 4);
+//  Robot.pointTo(a0);
+//  int * position = getPosition();
+  int * position = getPositionField();
+//  Robot.circle(position[0], position[1], 4);
   Robot.textSize(2);
+  Robot.text(position[0], 5, 80);
+  Robot.text(position[1], 55, 5);
+  
   Robot.text((int)Robot.compassRead(), 47, 70); //Affiche la boussole
 
   free(position);
@@ -112,4 +124,78 @@ void sort(int a[], int size) {
       }
     }
   }
+}
+//Retourne un tableau correspondant au coordonnees du centre du robot sur le terrain
+// [0]=x
+// [1] = y
+int * getPositionField () {
+  int * distances = getOlympicDistance();
+  int orientation = (int) Robot.compassRead();
+  int * position = new int [2];
+  Robot.clearScreen();
+  if (orientation < (haut + TOLERANCE_BOUSSOLE) % 360 && orientation > (haut - TOLERANCE_BOUSSOLE) % 360){
+    // Si le capteur droit est plus proche d'un mur, calculer avec ce capteur
+    Robot.text("haut", 5, 5);
+    if (distances[0] < distances[2]) {
+      position[0] = lPlan - (distances[0] + rayonRobot);
+    }else {
+      position[0] = distances[2] + rayonRobot;
+    }
+    // Si le capteur bas est plus proche d'un mur, calculer avec ce capteur
+    if (distances[3] < distances[1]) {
+      position[1] = hPlan - (distances[3] + rayonRobot);
+    }else {
+      position[1] = distances[1] + rayonRobot;
+    }
+  }
+  //Si le robot est tourne vers la droite
+  else if (orientation < (droite + TOLERANCE_BOUSSOLE) % 360 && orientation > (droite - TOLERANCE_BOUSSOLE) % 360){
+    Robot.text("droite", 5, 5);
+    if (distances[1] < distances[3]) {
+      position[0] = lPlan - (distances[1] + rayonRobot);
+    }else {
+      position[0] = distances[3] + rayonRobot;
+    }
+    if (distances[0] < distances[2]) {
+      position[1] = distances[0] + rayonRobot;
+    }else {
+      position[1] = hPlan - (distances[2] + rayonRobot);
+    }   
+  }
+  //Si le robot est tourne vers la gauche
+  else if (orientation < (gauche + TOLERANCE_BOUSSOLE) % 360 && orientation > (gauche - TOLERANCE_BOUSSOLE) % 360){
+    Robot.text("gauche", 5, 5);
+    if (distances[1] < distances[3]) {
+      position[0] = distances[1] + rayonRobot;
+    }else {
+      position[0] = lPlan - (distances[3] + rayonRobot);
+    }
+    if (distances[0] < distances[2]) {
+      position[1] = distances[0] + rayonRobot;
+    }else {
+      position[1] = hPlan - (distances[2] + rayonRobot);
+    } 
+  }
+  //Si le robot est tourne vers le bas
+  else if (orientation < (bas + TOLERANCE_BOUSSOLE) % 360 && orientation > (bas - TOLERANCE_BOUSSOLE) % 360){  
+    Robot.text("bas", 5, 5);
+    if (distances[0] < distances[2]) {
+      position[0] = distances[0] + rayonRobot;
+    }else {
+      position[0] = lPlan - (distances[2] + rayonRobot);
+    }
+    if (distances[1] < distances[3]) {
+      position[1] = hPlan - (distances[1] + rayonRobot);
+    }else {
+      position[1] = distances[3];
+    }
+  }
+  else {
+    Robot.text("autre", 5, 5);
+    Robot.text(orientation, 40, 70);
+    Robot.pointTo(haut);
+    getPositionField();
+  }
+  free(distances);
+  return position;
 }
