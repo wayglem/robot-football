@@ -9,38 +9,36 @@ int droite = 218;
 
 void setup() {
   // put your setup code here, to run once:
-
+  Robot.begin();
+  Robot.beginTFT();
+  Robot.stroke(0, 0, 0);
+  Robot.beginSpeaker();
+  Robot.textSize(2);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  moveUntil(30);
-  delay(5000);
-  moveUntil2(25);
-  delay(5000);
+  moveUntil(25);
+  delay(3000);
 }
 void moveUntil(int distanceInCM){
-  int sensorDistance = (int) Robot.analogRead(M2) * 1.27;
-  while(sensorDistance > distanceInCM){
-    sensorDistance = (int) Robot.analogRead(M2) * 1.27;
-    Robot.motorsWrite(255,255);
-    delay(40);
-  }
-  Robot.motorsStop();
-}
-void moveUntil2(int distanceInCM){
   int sensorDistance = (int) Robot.analogRead(M2) * 1.27;
   bool isArrived = false;
   while(!isArrived) {
     while(sensorDistance > distanceInCM){
-      sensorDistance = (int) Robot.analogRead(M2) * 1.27;
       Robot.motorsWrite(255,255);
-      delay(40);
+      delay(10);
+      sensorDistance = (int) Robot.analogRead(M2) * 1.27;
     }
+    Robot.motorsStop();
+    Robot.beep(BEEP_SIMPLE);
     int * sensorsValues = getOlympicDistance();
     if (sensorsValues[1] <= distanceInCM) {
       isArrived = true;
+      Robot.beep(BEEP_DOUBLE);
     }
+    sensorDistance = (int) Robot.analogRead(M2) * 1.27;    
+    free(sensorsValues);
   }
   Robot.motorsStop();
 }
@@ -90,4 +88,3 @@ void sort(int a[], int size) {
     }
   }
 }
-
