@@ -15,7 +15,7 @@ void setup() {
   Robot.beginTFT();
   Robot.beginSpeaker();
   Robot.stroke(0, 0, 0);
-/*
+
   Robot.text("Compass : haut", 5, 5);
   Robot.waitContinue(BUTTON_MIDDLE);
   haut =  (int) Robot.compassRead();
@@ -40,7 +40,7 @@ void setup() {
   Robot.text(droite, 40, 70);
   delay(2000);
   Robot.clearScreen();
-  */
+  
 }
 
 void loop() {
