@@ -22,6 +22,7 @@ void setup() {
   Robot.text(haut, 40, 70);
   delay(2000);
   Robot.clearScreen();
+  /*
   Robot.text("Compass : gauche", 5, 5);
   Robot.waitContinue(BUTTON_MIDDLE);
   gauche =  (int) Robot.compassRead();
@@ -40,15 +41,21 @@ void setup() {
   Robot.text(droite, 40, 70);
   delay(2000);
   Robot.clearScreen();
-  
+  */
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   Robot.pointTo(haut);
   Robot.motorsStop();
-  delay(1000);
+  Robot.motorsWrite(255,255);
+  delay(7000);
+  Robot.pointTo((haut-180)%360);
+  Robot.motorsWrite(255,255);
+  delay(7000);
   Robot.motorsStop();
+  delay(1000);
+  /*
   Robot.pointTo(gauche);
   Robot.motorsStop();
   delay(1000);
@@ -61,6 +68,6 @@ void loop() {
   Robot.motorsStop();
   delay(1000);
   Robot.motorsStop();
-  Robot.beep(BEEP_SIMPLE);
+  Robot.beep(BEEP_SIMPLE);*/
 
 }

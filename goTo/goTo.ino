@@ -2,17 +2,17 @@
 #include <SPI.h>
 #include <Wire.h>
 
-int haut = 165;
+int haut = 163;
 int gauche = 95;
-int bas = 291;
-int droite = 221;
+int bas = 281;
+int droite = 219;
 
-int targetX = 64;
-int targetY = 38;
+int targetX = 58;
+int targetY = 70;
 int hPlan = 135;
 int lPlan = 103;
 
-int TOLERANCE_BOUSSOLE = 10;
+int TOLERANCE_BOUSSOLE = 5;
 int rayonRobot = 11;
 
 void setup() {
@@ -22,6 +22,7 @@ void setup() {
   Robot.beginSpeaker();
   Robot.stroke(0, 0, 0);
   Robot.textSize(2);
+  delay(1500);
 }
 
 void loop() {
@@ -150,7 +151,7 @@ int * getPositionField () {
 }
 
 void goToTarget(int x, int y) {
-  int TOLERANCE = 5;
+  int TOLERANCE = 10;
   while (true){
     int * position = getPositionField();
     Robot.clearScreen();
