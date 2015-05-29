@@ -22,7 +22,6 @@ void setup() {
   Robot.text(haut, 40, 70);
   delay(2000);
   Robot.clearScreen();
-  /*
   Robot.text("Compass : gauche", 5, 5);
   Robot.waitContinue(BUTTON_MIDDLE);
   gauche =  (int) Robot.compassRead();
@@ -41,7 +40,6 @@ void setup() {
   Robot.text(droite, 40, 70);
   delay(2000);
   Robot.clearScreen();
-  */
 }
 
 void loop() {

@@ -144,7 +144,7 @@ int * getPositionField () {
   }
   else {
     Robot.pointTo(haut);
-    getPositionField();
+    return getPositionField();
   }
   free(distances);
   return position;
@@ -211,13 +211,24 @@ void moveUntil(int distanceInCM, int orientation) {
       Robot.motorsWrite(200,200);
       delay(40);
       sensorDistance = (int) Robot.analogRead(M2) * 1.27;
+      sensorBackDistance = (int) Robot.analogRead(M6) * 1.27;
+      if (sensorBackDistance < sensorDistance) {
+        // ROBOT is on horizontal axis
+        if(orientation = 0) {
+          sensorDistance = lPlan - sensorBackDistance;
+        }
+        // ROBOT is on vertical axis
+        else {
+          sensorDistance = hPlan - sensorBackDistance;      
+        }
+      }
     }
     Robot.motorsStop();
     int * sensorsValues = getOlympicDistance();
     if (sensorsValues[1] <= distanceInCM) {
       isArrived = true;
     }
-    sensorDistance = (int) Robot.analogRead(M2) * 1.27;    
+    sensorDistance = sensorsValues[1];    
     free(sensorsValues);
   }
   Robot.motorsStop(); 
