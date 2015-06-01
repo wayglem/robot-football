@@ -2,13 +2,13 @@
 #include <SPI.h>
 #include <Wire.h>
 
-int haut = 163;
-int gauche = 95;
-int bas = 281;
+int haut = 157;
+int gauche = 84;
+int bas = 283;
 int droite = 219;
 
-int targetX = 58;
-int targetY = 70;
+int targetX = 74;
+int targetY = 37;
 int hPlan = 135;
 int lPlan = 103;
 
@@ -153,6 +153,7 @@ int * getPositionField () {
 void goToTarget(int x, int y) {
   int TOLERANCE = 10;
   while (true){
+    Robot.pointTo(haut);
     int * position = getPositionField();
     Robot.clearScreen();
     Robot.text("x :",5,5);
@@ -208,7 +209,7 @@ void moveUntil(int distanceInCM, int orientation) {
   bool isArrived = false;
   while(!isArrived) {
     while(sensorDistance > distanceInCM){
-      Robot.motorsWrite(200,200);
+      Robot.motorsWrite(150,150);
       delay(40);
       sensorDistance = (int) Robot.analogRead(M2) * 1.27;
       sensorBackDistance = (int) Robot.analogRead(M6) * 1.27;

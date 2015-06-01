@@ -4,10 +4,10 @@
 
 //int haut, bas, gauche, droite = 0;
 
-int haut = 158;
-int gauche = 78;
-int bas = 283;
-int droite = 218;
+int haut = 152;
+int gauche = 83;
+int bas = 281;
+int droite = 216;
 
 int rayonRobot = 11;
 int hPlan = 135;
@@ -15,8 +15,8 @@ int lPlan = 103;
 int ml = 12; // marge largeur
 int mh = 12; // marge hauteur
 
-int targetX = 79;
-int targetY = 35;
+int targetX = 37;
+int targetY = 28;
 
 int TOLERANCE_BOUSSOLE = 10;
 
@@ -61,8 +61,8 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
 //  Robot.pointTo(haut);
-  moveForwardUntil(targetY);
-/*
+//  moveForwardUntil(targetY);
+
   int * position = getPositionField();
   if (position[0] < targetX){
     Robot.pointTo(droite);
@@ -74,7 +74,6 @@ void loop() {
   Robot.clearScreen();
   Robot.text(position[0], 50, 15);
   Robot.text(position[1], 30, 115);
-  */
   delay(5000);
 //  free(position);
 }

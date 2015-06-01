@@ -4,10 +4,10 @@
 
 //int haut, bas, gauche, droite = 0;
 
-int haut = 158;
-int gauche = 78;
+int haut = 157;
+int gauche = 84;
 int bas = 283;
-int droite = 218;
+int droite = 219;
 
 void setup() {
   // put your setup code here, to run once:
