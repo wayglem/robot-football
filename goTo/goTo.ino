@@ -12,6 +12,7 @@ int targetY = 37;
 int hPlan = 135;
 int lPlan = 103;
 
+
 int TOLERANCE_BOUSSOLE = 5;
 int rayonRobot = 11;
 
