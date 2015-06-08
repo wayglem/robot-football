@@ -15,7 +15,7 @@ void setup() {
   Robot.beginTFT();
   Robot.stroke(0, 0, 0);
   Robot.textSize(2);
-  if (Robot.analogRead(M0) < Robot.analogRead(M4)){
+    if (Robot.analogRead(M0) < Robot.analogRead(M4)){
     chosenSensor = M0;
     Robot.text("droite", 5,5);
     Robot.text(Robot.analogRead(M4), 5,80);

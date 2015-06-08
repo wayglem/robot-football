@@ -2,7 +2,7 @@
 #include <SPI.h>
 #include <Wire.h>
 
-int DISTANCE_FROM_WALL = 30;
+int DISTANCE_FROM_WALL = 33;
 int MAX_SPEED = 175;
 int CORRECTION_SPEED = 150;
 int TOLERANCE_DISTANCE = 5;
@@ -30,16 +30,41 @@ void loop() {
 }
 
 void parcours1() {
-  int northEastDistance = sonar_read_mode(M1) * 1.27;
+  int eastDistance = sonar_read_mode(M0) * 1.27;
   int northDistance = sonar_read_mode(M2) * 1.27;
   int northWestDistance = sonar_read_mode(M3) * 1.27;
   int westDistance = sonar_read_mode(M4) * 1.27;
   int compass = Robot.compassRead();
-  
-  
-  
-  if (northDistance < 90 && westDistance < 80 && compass > 55 && compass < 120) {
+
+  if (northDistance < 20){
+    delay(300);
+   eastDistance = sonar_read_mode(M0) * 1.27;
+   northDistance = sonar_read_mode(M2) * 1.27;
+   northWestDistance = sonar_read_mode(M3) * 1.27;
+   westDistance = sonar_read_mode(M4) * 1.27;
+   compass = Robot.compassRead();
+   if (northDistance < 20) {
+     if (westDistance > 80){
+      Robot.motorsWrite(-255,-255);
+      delay(250);
+      turnLeft90();
+      Robot.motorsWrite(MAX_SPEED, MAX_SPEED);
+      delay(1500);
+    }
+    else {
+      Robot.motorsWrite(-255,-255);
+      delay(250);
+      turnRight90();
+      Robot.motorsWrite(MAX_SPEED, MAX_SPEED);
+      delay(1500);
+    }
+   }
+  }
+
+  if (northDistance < 90 && westDistance < 80 && eastDistance > 120) {
     turnRight90();
+    Robot.motorsWrite(MAX_SPEED, MAX_SPEED);
+    delay(200);
   }
   else if(northDistance > 75 && northDistance < 120 && northWestDistance > 85) {   
     turnLeft90();
@@ -105,10 +130,8 @@ void turnLeft90() {
 }
 
 void turnRight90() {
-    Robot.motorsWrite(255, 100);
-    delay(300);
-    Robot.pointTo(172);
-    delay(100);
+    Robot.motorsWrite(255, 0);
+    delay(250);
     Robot.motorsWrite(MAX_SPEED, MAX_SPEED);
 }
 
