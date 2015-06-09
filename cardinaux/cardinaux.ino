@@ -44,28 +44,8 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  Robot.pointTo(haut);
+  Robot.motorsWrite(150,150);
+  delay(2000);
   Robot.motorsStop();
-  Robot.motorsWrite(255,255);
-  delay(7000);
-  Robot.pointTo((haut-180)%360);
-  Robot.motorsWrite(255,255);
-  delay(7000);
-  Robot.motorsStop();
-  delay(1000);
-  /*
-  Robot.pointTo(gauche);
-  Robot.motorsStop();
-  delay(1000);
-  Robot.motorsStop();
-  Robot.pointTo(bas);
-  Robot.motorsStop();
-  delay(1000);
-  Robot.motorsStop();
-  Robot.pointTo(droite);
-  Robot.motorsStop();
-  delay(1000);
-  Robot.motorsStop();
-  Robot.beep(BEEP_SIMPLE);*/
-
+  delay(2000);
 }
