@@ -59,62 +59,62 @@ void printDistances (int northDistance, int southDistance, int eastDistance, int
 /**
   returns an array of 2 int, the first is x coordinates, the second is y coordiantes.
 */
-int * robotCoordinates (int northDistance, int southDistance, int eastDistance, int westDistance, int orientation) {
+int * robotCoordinates (int frontDistance, int backDistance, int rightDistance, int leftDistance, int orientation) {
   int * coordinates = new int[2];
   if(bestOrientation (orientation) == cap[0]){
-    if (westDistance < eastDistance) {
-      coordinates[0] = westDistance + RAYON_ROBOT;
+    if (leftDistance < rightDistance) {
+      coordinates[0] = leftDistance + RAYON_ROBOT;
     }
     else {
-      coordinates[0] = L_PLAN - eastDistance - RAYON_ROBOT;
+      coordinates[0] = L_PLAN - rightDistance - RAYON_ROBOT;
     }
-    if (northDistance < southDistance) {
-      coordinates[1] = northDistance + RAYON_ROBOT;
+    if (frontDistance < backDistance) {
+      coordinates[1] = frontDistance + RAYON_ROBOT;
     }
     else {
-      coordinates[1] = H_PLAN - southDistance - RAYON_ROBOT;
+      coordinates[1] = H_PLAN - backDistance - RAYON_ROBOT;
     }
   }
   else if (bestOrientation (orientation) == cap[1]){
-    if (westDistance < eastDistance) {
-      coordinates[0] = L_PLAN - westDistance - RAYON_ROBOT;
+    if (leftDistance < rightDistance) {
+      coordinates[0] = L_PLAN - leftDistance - RAYON_ROBOT;
     }
     else {
-      coordinates[0] = eastDistance + RAYON_ROBOT;
+      coordinates[0] = rightDistance + RAYON_ROBOT;
     }
-    if (northDistance < southDistance) {
-      coordinates[1] = H_PLAN - northDistance - RAYON_ROBOT;
+    if (frontDistance < backDistance) {
+      coordinates[1] = H_PLAN - frontDistance - RAYON_ROBOT;
     }
     else {
-      coordinates[1] = southDistance + RAYON_ROBOT;
+      coordinates[1] = backDistance + RAYON_ROBOT;
     }
   }
   else if (bestOrientation (orientation) == cap[2]){
-    if (westDistance < eastDistance) {
-      coordinates[1] = westDistance + RAYON_ROBOT;
+    if (leftDistance < rightDistance) {
+      coordinates[1] = leftDistance + RAYON_ROBOT;
     }
     else {
-      coordinates[1] = L_PLAN - eastDistance - RAYON_ROBOT;
+      coordinates[1] = H_PLAN - rightDistance - RAYON_ROBOT;
     }
-    if (northDistance < southDistance) {
-      coordinates[0] = northDistance + RAYON_ROBOT;
+    if (frontDistance < backDistance) {
+      coordinates[0] = L_PLAN - frontDistance - RAYON_ROBOT;
     }
     else {
-      coordinates[0] = H_PLAN - southDistance - RAYON_ROBOT;
+      coordinates[0] = backDistance + RAYON_ROBOT;
     }
   }
   else if (bestOrientation (orientation) == cap[3]){
-    if (westDistance < eastDistance) {
-      coordinates[1] = L_PLAN - westDistance - RAYON_ROBOT;
+    if (leftDistance < rightDistance) {
+      coordinates[1] = H_PLAN - leftDistance - RAYON_ROBOT;
     }
     else {
-      coordinates[1] = eastDistance + RAYON_ROBOT;
+      coordinates[1] = rightDistance + RAYON_ROBOT;
     }
-    if (northDistance < southDistance) {
-      coordinates[0] = H_PLAN - northDistance - RAYON_ROBOT;
+    if (frontDistance < backDistance) {
+      coordinates[0] = frontDistance + RAYON_ROBOT;
     }
     else {
-      coordinates[0] = southDistance + RAYON_ROBOT;
+      coordinates[0] = L_PLAN - backDistance - RAYON_ROBOT;
     }
   }
   return coordinates;
