@@ -23,12 +23,6 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-
-  Robot.clearScreen();
-  Robot.text("=>A",50,50);
-  goTo(23,19);
-  Robot.text("OK",90,50);
-  delay(5000);
   Robot.clearScreen();
   Robot.text("=>C",50,50);
   goTo(42,45);
@@ -46,8 +40,8 @@ void moveUntil(int distanceInCM){
   Robot.text(distanceInCM, 80,3);
   Robot.text("val",3,50);
   Robot.text(getFrontValue(), 80,50);
-  while (distanceInCM < getFrontValue()) {
-    Robot.motorsWrite(150,150);
+  while (distanceInCM <getFrontValue()) {
+    Robot.motorsWrite(MAX_SPEED,MAX_SPEED);
     delay(50);
   }
   Robot.motorsStop();
@@ -60,49 +54,49 @@ void goTo(int x, int y) {
   int TOLERANCE = 5;
   int * sensorValues = getSensorsValue();
   int * coordinates = robotCoordinates(sensorValues[0], sensorValues[1], sensorValues[2], sensorValues[3], Robot.compassRead());
-  while(abs(coordinates[0] - x) > TOLERANCE || abs(coordinates[1] - y) > TOLERANCE){
+  while(abs(coordinates[0] - x) > TOLERANCE+2 || abs(coordinates[1] - y) > TOLERANCE+2){
     if(coordinates[1] - y > TOLERANCE) {
+      //Robot.text("IF1",3,3);
       Robot.pointTo(cap[0]);
-      moveUntil(y);
+      moveUntil(y-RAYON_ROBOT);      
     }
-    else if (coordinates[1] - y < TOLERANCE) {
+    else if (coordinates[1] - y < -TOLERANCE) {
+      //Robot.text("IF2",3,3);
       Robot.pointTo(cap[1]);
-      moveUntil(H_PLAN - y);
+      moveUntil(H_PLAN - y - RAYON_ROBOT);
     }
     delay(1000);
+    //Robot.clearScreen();
     sensorValues = getSensorsValue();
+    free(coordinates);
     coordinates = robotCoordinates(sensorValues[0], sensorValues[1], sensorValues[2], sensorValues[3], Robot.compassRead());
-    if(coordinates[0] - x < TOLERANCE) {
+    free(sensorValues);
+     if(coordinates[0] - x < -TOLERANCE) {
+      //Robot.text("IF3",3,3);
       Robot.pointTo(cap[2]);
-      moveUntil(L_PLAN - x);
+      moveUntil(L_PLAN - x - RAYON_ROBOT);
     }
     else if (coordinates[0] - x > TOLERANCE) {
+      //Robot.text("IF4",3,3);
       Robot.pointTo(cap[3]);
-      moveUntil(x);
+      moveUntil(x - RAYON_ROBOT);
     }
-    delay(1000);
+    free(coordinates);
+    delay(200);
     sensorValues = getSensorsValue();
     coordinates = robotCoordinates(sensorValues[0], sensorValues[1], sensorValues[2], sensorValues[3], Robot.compassRead());
-    delay(200);
+    
+    free(sensorValues);
+    //Robot.clearScreen();
+    //Robot.text(coordinates[0],3,110);
+    //Robot.text(coordinates[1],50,110);
+    delay(1000);
+    //Robot.clearScreen(); 
+    
   }
-  Robot.text(coordinates[0],3,110);
-  Robot.text(coordinates[1],50,110);
-  free(sensorValues);
-  free(coordinates);
-}
-
-void moveStraight (int orientation){
-  int TOLERANCE_COMPASS = 5;
-    if (Robot.compassRead() > (orientation + TOLERANCE_COMPASS)%360) {
-      Robot.motorsWrite(CORRECTION_SPEED,MAX_SPEED);
-    }
-    else if (Robot.compassRead() < (orientation - TOLERANCE_COMPASS)%360) {
-      Robot.motorsWrite(MAX_SPEED, CORRECTION_SPEED);
-    }
-    else {
-      Robot.motorsWrite(MAX_SPEED,MAX_SPEED);
-    }
-    delay(50);
+  //Robot.clearScreen();
+  //Robot.text("WHI",3,3);
+  return;
 }
 
 int * getSensorsValue (){
