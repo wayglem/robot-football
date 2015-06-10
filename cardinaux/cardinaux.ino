@@ -43,9 +43,10 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  Robot.motorsWrite(150,150);
-  delay(2000);
-  Robot.motorsStop();
-  delay(2000);
+  Robot.clearScreen();
+  Robot.motorsWrite(150, 150);
+
+  int WC = map(Robot.trimRead(), 0, 1023, -20, 20);
+  Robot.text(WC, 100, 149);
+  delay(40);
 }
